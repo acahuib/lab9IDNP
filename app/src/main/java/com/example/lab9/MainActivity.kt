@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var db: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,22 +23,34 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Inicializa la base de datos Room
-        val db = Room.databaseBuilder(
+        // Inicializa la base de datos Room (solo una vez)
+        db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "recetas-db"
         ).build()
 
-        // Acción al presionar el botón
+        // Configura el RecyclerView
+        binding.rvRecetas.layoutManager = LinearLayoutManager(this)
+
+        // Acción al presionar el botón de agregar receta
         binding.btnAgregar.setOnClickListener {
-            startActivity(Intent(this, AddRecetaActivity::class.java))
+            val intent = Intent(this, AddRecetaActivity::class.java)
+            startActivity(intent)
         }
 
-        // Cargar la lista de recetas en el RecyclerView
+        // Cargar recetas al iniciar
+        cargarRecetas()
+    }
+
+    private fun cargarRecetas() {
         lifecycleScope.launch {
             val lista = db.recetaDao().obtenerTodas()
-            binding.rvRecetas.layoutManager = LinearLayoutManager(this@MainActivity)
             binding.rvRecetas.adapter = RecetaAdapter(lista)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cargarRecetas()
     }
 }
