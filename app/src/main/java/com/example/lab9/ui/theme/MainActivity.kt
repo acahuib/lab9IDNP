@@ -1,4 +1,4 @@
-package com.example.lab9.ui.theme
+package com.example.lab9
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,30 +6,38 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
-import com.example.lab9.R
 import com.example.lab9.data.AppDatabase
-import kotlinx.android.synthetic.main.activity_main.*
+import com.example.lab9.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
+import com.example.lab9.ui.theme.RecetaAdapter
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
+        // Inicializa el binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Inicializa la base de datos Room
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "recetas-db"
         ).build()
 
-        btnAgregar.setOnClickListener {
+        // Acción al presionar el botón
+        binding.btnAgregar.setOnClickListener {
             startActivity(Intent(this, AddRecetaActivity::class.java))
         }
 
+        // Cargar la lista de recetas en el RecyclerView
         lifecycleScope.launch {
             val lista = db.recetaDao().obtenerTodas()
-            rvRecetas.layoutManager = LinearLayoutManager(this@MainActivity)
-            rvRecetas.adapter = RecetaAdapter(lista)
+            binding.rvRecetas.layoutManager = LinearLayoutManager(this@MainActivity)
+            binding.rvRecetas.adapter = RecetaAdapter(lista)
         }
     }
 }
