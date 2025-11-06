@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.lab9.data.AppDatabase
 import com.example.lab9.databinding.ActivityMainBinding
+import com.example.lab9.ui.RecetaAdapter
 import kotlinx.coroutines.launch
-import com.example.lab9.ui.theme.RecetaAdapter
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.example.lab9.ui.theme
+package com.example.lab9.ui
 
 import android.view.LayoutInflater
 import android.view.View
